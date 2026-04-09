@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public interface AdmConexion {
 
-    public static Connection ObtenerConexion () {
+    default Connection ObtenerConexion () {
 
         String dbDriver= "com.mysql.cj.jdbc.Driver";
 

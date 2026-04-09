@@ -20,6 +20,9 @@ public class Turno {
         return dia;
     }
 
+    public Turno() {
+    }
+
     public void setDia(Date dia) {
         this.dia = dia;
     }

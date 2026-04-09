@@ -20,6 +20,4 @@ public interface DAO <O,K>  {
     public void delete(K id);
     public O getById(K id);
     public boolean existsById(K id);
-    List<O> listarTurnos(int id);
-
 }

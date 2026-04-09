@@ -5,9 +5,13 @@ public class Paciente {
     private int telefono;
     private String nombre;
 
-    public Paciente(int telefono, String nombre) {
+    public Paciente(int nroPaciente, int telefono, String nombre) {
+        this.nroPaciente = nroPaciente;
         this.telefono = telefono;
         this.nombre = nombre;
+    }
+
+    public Paciente() {
     }
 
     public int getNroPaciente() {

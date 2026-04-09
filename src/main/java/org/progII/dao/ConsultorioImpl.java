@@ -1,106 +1,135 @@
 package org.progII.dao;
 
-import org.progII.entities.Turno;
+import org.progII.entities.Consultorio;
 import org.progII.interfaces.AdmConexion;
 import org.progII.interfaces.DAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
 
-public class ConsultorioImpl implements AdmConexion, DAO<Turno, Integer> {
+public class ConsultorioImpl implements AdmConexion, DAO<Consultorio, Integer> {
 
-    private Connection conn = null;
+    String SQL_INSERT = "INSERT INTO consultorio (nroConsultorio, medico) VALUES (?, ?)";
+    String SQL_UPDATE = "UPDATE consultorio SET medico = ? WHERE nroConsultorio = ?";
+    String SQL_DELETE = "DELETE FROM consultorio WHERE nroConsultorio = ?";
+    String SQL_GETBYID = "SELECT nroConsultorio, medico FROM consultorio WHERE nroConsultorio = ?";
+    String SQL_GETALL = "SELECT * FROM consultorio ORDER BY nombre ASC";
+    String SQL_EXISTBYID = "SELECT * FROM consultorio WHERE nroConsultorio = ?";
 
-    private static final String SQL_INSERT = "INSERT INTO turnos (dia, hora, nroConsultorio, nroPaciente) VALUES (?, ?, ?, ?)";
-    private static final String SQL_SELECT_ALL = "SELECT * FROM turnos WHERE nroConsultorio = ?";
-    private static final String SQL_DELETE_PINTURA = "DELETE FROM turnos WHERE nroConsultorio = ? AND dia = ?";
+
 
     @Override
-    public void insert(Turno objeto) {
-        try {
-            conn = AdmConexion.ObtenerConexion();
-            PreparedStatement ps = conn.prepareStatement(SQL_INSERT);
+    public List<Consultorio> getAll() {
+            List<Consultorio> consultorios = new ArrayList<>();
 
-            ps.setDate(1, new java.sql.Date(objeto.getDia().getTime()));
-            ps.setTime(2, objeto.getHora());
-            ps.setInt(3, objeto.getNroConsultorio());
-            ps.setInt(4, objeto.getNroPaciente());
+            try(Connection conn = ObtenerConexion();
+            PreparedStatement ps = conn.prepareStatement(SQL_GETALL)) {
 
+                ResultSet rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    int nroConsultorio = rs.getInt("nroConsultorio");
+                    String medico = rs.getString("medico");
+                    Consultorio consultorio = new Consultorio(nroConsultorio, medico);
+                    consultorios.add(consultorio);
+                }
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        return consultorios;
+    }
+
+
+    public void insert(Consultorio consultorio) {
+
+        try(Connection conn = ObtenerConexion();
+            PreparedStatement ps = conn.prepareStatement(SQL_INSERT)) {
+
+            ps.setInt(1, consultorio.getNroConsultorio());
+            ps.setString(2, consultorio.getMedico());
             ps.executeUpdate();
-            System.out.println("Turno insertado con éxito.");
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
-    public void cancelarPorPintura(Integer nroConsultorio, Date fecha) {
-        try {
-            conn = AdmConexion.ObtenerConexion();
-            PreparedStatement ps = conn.prepareStatement(SQL_DELETE_PINTURA);
+
+
+    @Override
+    public void update(Consultorio consultorio) {
+
+     try(Connection conn = ObtenerConexion();
+         PreparedStatement ps = conn.prepareStatement(SQL_UPDATE)) {
+
+         ps.setInt(1, consultorio.getNroConsultorio());
+         ps.setString(2, consultorio.getMedico());
+         ps.setInt(3, consultorio.getNroConsultorio());
+         ps.executeUpdate();
+
+     } catch (SQLException e) {
+         throw new RuntimeException(e);
+     }
+
+    }
+
+    @Override
+    public void delete(Integer nroConsultorio) {
+
+        try(Connection conn = ObtenerConexion();
+            PreparedStatement ps = conn.prepareStatement(SQL_DELETE)) {
 
             ps.setInt(1, nroConsultorio);
-            ps.setDate(2, new java.sql.Date(fecha.getTime()));
+            ps.executeUpdate();
 
-            int filas = ps.executeUpdate();
-            System.out.println("Turnos cancelados por pintura: " + filas);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+
+
     }
 
     @Override
-    public List<Turno> getAll() {
-        return new ArrayList<>();
+    public Consultorio getById(Integer nroConsultorio) {
+
+        Consultorio consultorio = null;
+
+            try(Connection conn = ObtenerConexion();
+                PreparedStatement ps = conn.prepareStatement(SQL_GETBYID)) {
+
+                ps.setInt(1, nroConsultorio);
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next()) {
+                    consultorio = new Consultorio();
+                    consultorio.setNroConsultorio(nroConsultorio);
+                    consultorio.setMedico(rs.getString("medico"));
+
+                }
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            return consultorio;
     }
 
     @Override
-    public List<Turno> listarTurnos(int nroConsultorio) {
-        List<Turno> lista = new ArrayList<>();
-        String sql = "SELECT * FROM turnos WHERE nroConsultorio = ?";
-
-        try (Connection conn = AdmConexion.ObtenerConexion();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    public boolean existsById(Integer nroConsultorio) {
+        try(Connection conn = ObtenerConexion();
+            PreparedStatement ps = conn.prepareStatement(SQL_EXISTBYID)) {
 
             ps.setInt(1, nroConsultorio);
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                Turno t = new Turno(
-                        rs.getDate("dia"),
-                        rs.getTime("hora"),
-                        rs.getInt("nroConsultorio"),
-                        rs.getInt("nroPaciente")
-                );
-                lista.add(t);
-            }
+            return rs.next();
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return lista;
-    }
-
-    @Override
-    public void update(Turno objeto) {
-        // No solicitado explícitamente en la actividad actual
-    }
-
-    @Override
-    public void delete(Integer id) {
-        // Implementación de borrado simple por ID
-    }
-
-    @Override
-    public Turno getById(Integer id) {
-        return null;
-    }
-
-    @Override
-    public boolean existsById(Integer id) {
-        return false;
     }
 }
+
