@@ -2,8 +2,10 @@ package org.progII.entities;
 
 import java.sql.Time;
 import java.util.Date;
+import java.util.Objects;
 
 public class Turno {
+    private int id;
     private Date dia;
     private Time hora;
     private int nroConsultorio;
@@ -16,11 +18,20 @@ public class Turno {
         this.nroPaciente = nroPaciente;
     }
 
+
     public Date getDia() {
         return dia;
     }
 
     public Turno() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setDia(Date dia) {
@@ -49,5 +60,28 @@ public class Turno {
 
     public void setNroPaciente(int nroPaciente) {
         this.nroPaciente = nroPaciente;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Turno turno = (Turno) o;
+        return id == turno.id && nroConsultorio == turno.nroConsultorio && nroPaciente == turno.nroPaciente && Objects.equals(dia, turno.dia) && Objects.equals(hora, turno.hora);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, dia, hora, nroConsultorio, nroPaciente);
+    }
+
+    @Override
+    public String toString() {
+        return "Turno{" +
+                "id=" + id +
+                ", dia=" + dia +
+                ", hora=" + hora +
+                ", nroConsultorio=" + nroConsultorio +
+                ", nroPaciente=" + nroPaciente +
+                '}';
     }
 }

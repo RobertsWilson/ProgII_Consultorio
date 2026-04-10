@@ -13,17 +13,17 @@ import java.util.List;
 
 public class TurnoImpl implements AdmConexion, DAO<Turno, Integer> {
 
-    String SQL_INSERT = "INSERT INTO Turno (dia, hora, nroConsultorio, nroPaciente) VALUES (?, ?, ?, ?)";
+    String SQL_INSERT = "INSERT INTO Turno (id, dia, hora, nroConsultorio, nroPaciente) VALUES (?, ?, ?, ?, ?)";
 
-    String SQL_UPDATE = "UPDATE Turno SET dia = ?, hora = ?, nroConsultorio = ?, nroPaciente = ? WHERE nroPaciente = ?";
+    String SQL_UPDATE = "UPDATE Turno SET dia = ?, hora = ?, nroConsultorio = ?, nroPaciente = ? WHERE id = ?";
 
-    String SQL_DELETE = "DELETE FROM Turno WHERE nroPaciente = ?";
+    String SQL_DELETE = "DELETE FROM Turno WHERE nroPaciente = id";
 
-    String SQL_GETBYID = "SELECT dia, hora, nroConsultorio, nroPaciente FROM Turno WHERE nroPaciente = ?";
+    String SQL_GETBYID = "SELECT id, dia, hora, nroConsultorio, nroPaciente FROM Turno WHERE id = ?";
 
     String SQL_GETALL = "SELECT * FROM Turno ORDER BY dia ASC, hora ASC";
 
-    String SQL_EXISTBYID = "SELECT * FROM Turno WHERE nroPaciente = ?";
+    String SQL_EXISTBYID = "SELECT * FROM Turno WHERE id = ?";
 
 
     @Override
@@ -36,6 +36,7 @@ public class TurnoImpl implements AdmConexion, DAO<Turno, Integer> {
 
             while (rs.next()) {
                 Turno turno = new Turno();
+                turno.setId(rs.getInt("id"));
                 turno.setDia(rs.getDate("dia"));
                 turno.setHora(rs.getTime("hora"));
                 turno.setNroConsultorio(rs.getInt("nroConsultorio"));
@@ -87,12 +88,12 @@ public class TurnoImpl implements AdmConexion, DAO<Turno, Integer> {
     }
 
     @Override
-    public void delete(Integer nroPaciente) {
+    public void delete(Integer id) {
 
         try (Connection conn = ObtenerConexion();
              PreparedStatement ps = conn.prepareStatement(SQL_DELETE)) {
 
-            ps.setInt(1, nroPaciente);
+            ps.setInt(1, id);
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -103,21 +104,21 @@ public class TurnoImpl implements AdmConexion, DAO<Turno, Integer> {
     }
 
     @Override
-    public Turno getById(Integer nroPaciente) {
+    public Turno getById(Integer id) {
 
         Turno turno = null;
 
         try (Connection conn = ObtenerConexion();
              PreparedStatement ps = conn.prepareStatement(SQL_GETBYID)) {
 
-            ps.setInt(1, nroPaciente);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 turno = new Turno();
                 turno.setDia(rs.getDate("dia"));
                 turno.setHora(rs.getTime("hora"));
                 turno.setNroConsultorio(rs.getInt("nroConsultorio"));
-                turno.setNroPaciente(rs.getInt("nroPaciente"));
+                turno.setNroPaciente(rs.getInt("id"));
             }
 
 
@@ -129,12 +130,12 @@ public class TurnoImpl implements AdmConexion, DAO<Turno, Integer> {
     }
 
     @Override
-    public boolean existsById(Integer nroPaciente) {
+    public boolean existsById(Integer id) {
 
         try(Connection conn = ObtenerConexion();
         PreparedStatement ps = conn.prepareStatement(SQL_EXISTBYID)) {
 
-            ps.setInt(1, nroPaciente);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             return rs.next();
 

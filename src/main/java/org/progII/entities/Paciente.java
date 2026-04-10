@@ -1,5 +1,7 @@
 package org.progII.entities;
 
+import java.util.Objects;
+
 public class Paciente {
     private int nroPaciente;
     private int telefono;
@@ -36,5 +38,26 @@ public class Paciente {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Paciente paciente = (Paciente) o;
+        return nroPaciente == paciente.nroPaciente && telefono == paciente.telefono && Objects.equals(nombre, paciente.nombre);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nroPaciente, telefono, nombre);
+    }
+
+    @Override
+    public String toString() {
+        return "Paciente{" +
+                "nroPaciente=" + nroPaciente +
+                ", telefono=" + telefono +
+                ", nombre='" + nombre + '\'' +
+                '}';
     }
 }

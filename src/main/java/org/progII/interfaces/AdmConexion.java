@@ -11,7 +11,7 @@ public interface AdmConexion {
         String dbDriver= "com.mysql.cj.jdbc.Driver";
 
 
-        String dbCadenaConexion = "jdbc:mysql://127.0.0.1:3306/consultorio";
+        String dbCadenaConexion = "jdbc:mysql://127.0.0.1:3306/sistema_consultas";
 
         String dbUsuario="root";
 
