@@ -25,6 +25,16 @@ public class Consultorio {
         this.turnos.add(nuevoTurno);
     }
 
+    public void cancelarTurnosPorPintura(Date diaPintura) {
+        this.turnos.removeIf(turno -> esMismoDia(turno.getDia(), diaPintura));
+        System.out.println("Todos los turnos para el día " + diaPintura + " han sido cancelados.");
+    }
+
+
+    private boolean esMismoDia(Date dia1, Date dia2) {
+        return dia1.equals(dia2);
+    }
+
     public int getNroConsultorio() {
         return nroConsultorio;
     }

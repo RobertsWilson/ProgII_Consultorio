@@ -7,8 +7,7 @@ public class Paciente {
     private int telefono;
     private String nombre;
 
-    public Paciente(int nroPaciente, int telefono, String nombre) {
-        this.nroPaciente = nroPaciente;
+    public Paciente(int telefono, String nombre) {
         this.telefono = telefono;
         this.nombre = nombre;
     }

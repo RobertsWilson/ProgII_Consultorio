@@ -16,7 +16,7 @@ public class ConsultorioImpl implements AdmConexion, DAO<Consultorio, Integer> {
     String SQL_UPDATE = "UPDATE consultorio SET medico = ? WHERE nroConsultorio = ?";
     String SQL_DELETE = "DELETE FROM consultorio WHERE nroConsultorio = ?";
     String SQL_GETBYID = "SELECT nroConsultorio, medico FROM consultorio WHERE nroConsultorio = ?";
-    String SQL_GETALL = "SELECT * FROM consultorio ORDER BY nombre ASC";
+    String SQL_GETALL = "SELECT * FROM consultorio ORDER BY medico ASC";
     String SQL_EXISTBYID = "SELECT * FROM consultorio WHERE nroConsultorio = ?";
 
 
